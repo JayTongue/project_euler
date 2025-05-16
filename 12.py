@@ -1,9 +1,20 @@
-divisor_count, adder, triangle_sum = 1, 1, 0
-while divisor_count <= 500:
-    divisor_count = 2
-    for i in range(2, triangle_sum//2 + 1):
-        if triangle_sum % i == 0:
-            divisor_count += 1
-    triangle_sum += adder
-    adder += 1
-print(triangle_sum - adder + 1)
+def divis(n):
+    count, i = 1, 2
+    while i <= n ** (1/2):
+        power = 0
+        while n % i == 0:
+            n //= i
+            power += 1
+        count *= (power + 1)
+        i += 1
+    if n > 1:
+        count *= 2
+    return count
+
+count, tri_start, tri_add = 0, 0, 1
+while count < 500:
+    tri_start += tri_add
+    count = divis(tri_start)
+    # print(count, tri_start)
+    tri_add += 1
+print(tri_start)
