@@ -8,8 +8,8 @@ def main():
         for b in range(1, 10000):
             c = a*b
             digits = list(str(a)+str(b)+str(c))
-            if len(digits) > 9:
-                break
+            if len(digits) != 9:
+                continue
             if set(digits) == ref:
                 answers.add(c)
 
