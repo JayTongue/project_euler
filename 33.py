@@ -10,7 +10,6 @@ def compare(a_start, a_end, b_start, b_end):
                     return (a, b)
     except ZeroDivisionError:
         return None
-
 fracs = []
 for a in range(10, 100):
     a_start, a_end = int(list(str(a))[0]), int(list(str(a))[1])
