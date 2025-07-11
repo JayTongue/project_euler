@@ -2,7 +2,7 @@ from itertools import permutations, combinations
 from helpers.is_prime import is_prime
 from tqdm import tqdm
 
-search_space = 3000
+search_space = 2000
 primes = [i for i in range(3, search_space+1) if is_prime(i)]
 
 bad = set()
