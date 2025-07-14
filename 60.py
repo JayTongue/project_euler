@@ -1,48 +1,54 @@
-from itertools import permutations, combinations
 from helpers.is_prime import is_prime
+from helpers.timer import timer
+from itertools import combinations, permutations
 from tqdm import tqdm
-import sys
 
-def permute(good, bad, combo):
-    prime_flag = True
-    for pair in permutations(combo, 2):
-        a, b = pair
-        key = frozenset((a, b))
-        if key in bad:
-            prime_flag = False
-            break
-        elif key in good:
-            continue
+@timer
+def main():
+    prime_array, prime_bools, small_primes = [], [], []
+    good, bad = set(), set()
+
+    for n in range(int(1e8)):
+        if is_prime(n):
+            prime_array.append(n)
+            prime_bools.append(True)
+            if n < 10000:
+                small_primes.append(n)
         else:
-            ab = int(f"{a}{b}")
-            ba = int(f"{b}{a}")
-            if is_prime(ab) and is_prime(ba):
-                good.add(key)
+            prime_bools.append(False)
+
+    def check_swapy(good, bad, elements_tuple):
+        for a, b in combinations(elements_tuple, 2):
+            ab_set = frozenset((a, b))
+            if ab_set in good:
+                continue
+            elif ab_set in bad:
+                return False
             else:
-                bad.add(key)
-                prime_flag = False
+                if all((prime_bools[int(f'{a}{b}')], prime_bools[int(f'{b}{a}')])):
+                    good.add(ab_set)
+                else:
+                    bad.add(ab_set)
+                    return False
+        return True
+
+    start_list = [tuple(pair) for pair in combinations(small_primes, 2) if check_swapy(good, bad, pair)]
+
+    solution = []
+    set_length = 5
+    for _ in range(set_length - 2):
+        new_list = []
+        for starter in tqdm(start_list):
+            for smol in small_primes:
+                test_list = starter + (smol,)
+                if check_swapy(good, bad, test_list):
+                    new_list.append(test_list)
+                    if len(test_list) == set_length:
+                        solution = test_list
+                        break
+            if solution:
                 break
-    return good, bad, prime_flag
+        start_list = new_list
+    print(solution, sum(solution))
 
-
-search_space = 10000
-primes = [i for i in range(3, search_space+1) if is_prime(i)]
-bad, good = set(), set()
-
-solutions = set()
-
-for combo in tqdm(combinations(primes, 4)):
-    good, bad, prime_flag = permute(good, bad, combo)
-    if prime_flag:
-         solutions.add(combo)
-        #  print(combo, sum(combo))
-    
-for solution in solutions:
-    for prime in primes:
-        new_tuple = [i for i in solution]
-        new_tuple.append(prime)
-        good, bad, prime_flag = permute(good, bad, new_tuple)
-        if prime_flag:
-            print('SOLUTION:', new_tuple, sum(new_tuple))
-            sys.exit()
-            
+main()
