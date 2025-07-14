@@ -35,7 +35,7 @@ for combo in tqdm(combinations(primes, 4)):
     good, bad, prime_flag = permute(good, bad, combo)
     if prime_flag:
          solutions.add(combo)
-         print(combo, sum(combo))
+        #  print(combo, sum(combo))
     
 for solution in solutions:
     for prime in primes:
