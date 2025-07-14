@@ -1,6 +1,6 @@
 from helpers.is_prime import is_prime
 from helpers.timer import timer
-from itertools import combinations, permutations
+from itertools import combinations
 from tqdm import tqdm
 
 @timer
