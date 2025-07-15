@@ -1,23 +1,20 @@
-from helpers.is_prime import is_prime
 from helpers.timer import timer
+from helpers.sieve import bool_sieve
 from itertools import combinations
 from tqdm import tqdm
+import math
 
 @timer
 def main():
-    prime_array, prime_bools, small_primes = [], [], []
     good, bad = set(), set()
 
-    for n in range(int(1e8)):
-        if is_prime(n):
-            prime_array.append(n)
-            prime_bools.append(True)
-            if n < 10000:
-                small_primes.append(n)
-        else:
-            prime_bools.append(False)
+    search_space = int(1e8)
+    bool_array = bool_sieve(search_space)
+    small_primes = [count for count, n in enumerate(bool_array) if n and count < 10000]
 
     def check_swapy(good, bad, elements_tuple):
+        def magnify(n):
+            return 10 ** math.ceil(math.log10(n))
         for a, b in combinations(elements_tuple, 2):
             ab_set = frozenset((a, b))
             if ab_set in good:
@@ -25,7 +22,8 @@ def main():
             elif ab_set in bad:
                 return False
             else:
-                if all((prime_bools[int(f'{a}{b}')], prime_bools[int(f'{b}{a}')])):
+                # if all((bool_array[int(f'{a}{b}')], bool_array[int(f'{b}{a}')])):
+                if all((bool_array[(a * magnify(b)) + b], bool_array[(b * magnify(a)) + a])):
                     good.add(ab_set)
                 else:
                     bad.add(ab_set)
