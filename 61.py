@@ -1,50 +1,50 @@
-from itertools import product
-from tqdm import tqdm
+import copy
+from helpers.timer import timer
 
-def triangle(n):
-    return n*(n+1)/2
+@timer
+def main():
+    def triangle(n):
+        return n*(n+1)//2
+    def square(n):
+        return n ** 2
+    def pentagonal(n):
+        return n*(3 * n - 1)//2
+    def hexagonal(n):
+        return n*(2 * n -1)
+    def heptagonal(n):
+        return n*(5 * n - 3)//2
+    def octagonal(n):
+        return n*(3 * n - 2)
 
-def square(n):
-    return n ** 2
+    def make_solutions(func):
+        func_list = list()
+        start = 1
+        while True:
+            result = func(start)
+            if result < int(1e4):
+                if result > 1000:
+                    func_list.append(result)
+                start += 1
+            else:
+                break
+        return func_list
 
-def pentagonal(n):
-    return n*(3 * n - 1)/2
+    tria, squa, pent, hexa, hept, octa = map(make_solutions, (triangle, square, pentagonal, hexagonal, heptagonal, octagonal))
 
-def hexagonal(n):
-    return n*(2 * n -1)
+    def loop(lists, start, end, solution=[]):
+        if len(lists) == 1:
+            final = start * 100 + end
+            if final in lists[0]:
+                solution += [final]
+                print(solution, sum(solution))
+        for next_list in lists:
+            for number in next_list:
+                if number // 100 == start:
+                    new_lists = copy.deepcopy(lists)
+                    new_lists.remove(next_list)
+                    loop(new_lists, number % 100, end, solution + [number])
 
-def heptagonal(n):
-    return n*(5 * n - 3)/2
+    for num in octa:
+        loop([tria, squa, pent, hexa, hept], num % 100, num // 100, [num])
 
-def octagonal(n):
-    return n*(3 * n - 2)
-
-tri_set, squa_set, pent_set, hexa_set, hept_set, octa_set = set(), set(), set(), set(), set(), set()
-sets = (tri_set, squa_set, pent_set, hexa_set, hept_set, octa_set)
-funcs = (triangle, square, pentagonal, hexagonal, heptagonal, octagonal)
-
-for func, type_set in zip(funcs, sets):
-    start = 1
-    while True:
-        generated = func(start)
-        if generated <= int(1e4):
-            if  generated >= 1000:
-                type_set.add(generated)
-        else:
-            break
-        start += 1
-
-num_sets = [tri_set, squa_set, pent_set, hexa_set, hept_set, octa_set]
-
-for sub_set in num_sets:
-    sub_set = set(map(int, sub_set))
-    sub_set = {num for num in sub_set if str(num)[:2] != str(num)[2:]}
-
-tri_set, squa_set, pent_set, hexa_set, hept_set, octa_set = num_sets
-
-for combo in tqdm(product(tri_set, squa_set, pent_set, hexa_set, hept_set, octa_set)):
-    tri_num, squa_num, pent_num, hexa_num, hept_num, octa_num = combo
-    firsts, seconds = set([string[:2] for string in map(str, combo)]), set([string[2:] for string in map(str, combo)])
-    if tuple(map(len, (firsts, seconds))) == (6, 6) and firsts == seconds and not any(str(string)[:2] == str(string)[2:] for string in combo):
-        print(combo, sum(combo))
-        break
+main()
