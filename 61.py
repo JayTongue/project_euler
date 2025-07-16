@@ -20,8 +20,9 @@ def octagonal(n):
     return n*(3 * n - 2)
 
 tri_set, squa_set, pent_set, hexa_set, hept_set, octa_set = set(), set(), set(), set(), set(), set()
-sets = tri_set, squa_set, pent_set, hexa_set, hept_set, octa_set
+sets = (tri_set, squa_set, pent_set, hexa_set, hept_set, octa_set)
 funcs = (triangle, square, pentagonal, hexagonal, heptagonal, octagonal)
+
 for func, type_set in zip(funcs, sets):
     start = 1
     while True:
@@ -33,9 +34,12 @@ for func, type_set in zip(funcs, sets):
             break
         start += 1
 
-
 num_sets = [tri_set, squa_set, pent_set, hexa_set, hept_set, octa_set]
-num_sets = [set(map(int, s)) for s in num_sets]
+
+for sub_set in num_sets:
+    sub_set = set(map(int, sub_set))
+    sub_set = {num for num in sub_set if str(num)[:2] != str(num)[2:]}
+
 tri_set, squa_set, pent_set, hexa_set, hept_set, octa_set = num_sets
 
 for combo in tqdm(product(tri_set, squa_set, pent_set, hexa_set, hept_set, octa_set)):
