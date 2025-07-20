@@ -24,12 +24,10 @@ def convergents(cf_terms):
 
     return convergents_list
 
-# --- Example: First 10 convergents of e ---
+
 terms = continued_fraction_e_terms(100)
 convs = convergents(terms)
 
 
 for i, frac in enumerate(convs):
     print(sum(map(int, list(str(frac.numerator)))))
-    # sol += frac.numerator
-    # print(f"Convergent {i}: {frac.numerator} ≈ {float(frac)}")
