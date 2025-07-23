@@ -28,6 +28,5 @@ def convergents(cf_terms):
 terms = continued_fraction_e_terms(100)
 convs = convergents(terms)
 
-
 for i, frac in enumerate(convs):
     print(sum(map(int, list(str(frac.numerator)))))
