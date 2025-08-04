@@ -13,51 +13,51 @@ def find_segments(loop):
         if repeated == loop[:len(repeated)]:
             return chunk
         
-# def continued_fraction_period(n):
-#     m, d, a0 = 0, 1, isqrt(n)
-#     if a0 * a0 == n:
-#         return 0  # perfect square, no period
+def continued_fraction_period(start):
+    zero, one, a0 = 0, 1, isqrt(start)
+    if a0 * a0 == start:
+        return 0  # perfect square, no period
 
-#     a = a0
-#     period = 0
-#     seen = set()
+    a = a0
+    period = 0
+    seen = set()
 
-#     while True:
-#         m = d * a - m
-#         d = (n - m * m) // d
-#         a = (a0 + m) // d
-#         period += 1
-#         if a == 2 * a0:
-#             return period
+    while True:
+        zero = one * a - zero
+        one = (start - zero * zero) // one
+        a = (a0 + zero) // one
+        period += 1
+        if a == 2 * a0:
+            return period
         
-def continued_fractions(start):
-    root = start.sqrt()
-    if sqrt(start) % 1 == 0:
-        return []
-    a0 = int(root)
-    a1 = Decimal(1) / (root - a0)
-    loops = [int(a1)]
-    for _ in range(150):
-        a2 = Decimal(1) / (a1 - int(a1))
-        loops.append(int(a2))
-        a1 = a2
-    chunk = find_segments(loops)
-    return chunk
+# def continued_fractions(start):
+#     root = start.sqrt()
+#     if sqrt(start) % 1 == 0:
+#         return []
+#     a0 = int(root)
+#     a1 = Decimal(1) / (root - a0)
+#     loops = [int(a1)]
+#     for _ in range(150):
+#         a2 = Decimal(1) / (a1 - int(a1))
+#         loops.append(int(a2))
+#         a1 = a2
+#     chunk = find_segments(loops)
+#     return chunk
 
 @timer
 def main():
     search_space = int(1e4)
     sol = 0
 
-    # for n in tqdm(range(2, limit + 1)):
-    #     if continued_fraction_period(n) % 2 == 1:
-    #         sol += 1
+    for n in tqdm(range(2, search_space + 1)):
+        if continued_fraction_period(n) % 2 == 1:
+            sol += 1
 
-    for i in tqdm(range(2, search_space + 1)):
-        chunk = continued_fractions(i)
-        if chunk:
-            if len(chunk) % 2 == 1:
-                sol += 1
+    # for i in tqdm(range(2, search_space + 1)):
+    #     chunk = continued_fractions(i)
+    #     if chunk:
+    #         if len(chunk) % 2 == 1:
+    #             sol += 1
     print(sol)
 
 main()

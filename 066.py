@@ -1,99 +1,34 @@
-# # from math import isqrt
-# from tqdm import tqdm
-# from numba import jit, njit
+import math
 
-# @njit
-# def isqrt(n):
-#     if n == 0 or n == 1:
-#         return n
-#     x = n
-#     y = (x + 1) // 2
-#     while y < x:
-#         x = y
-#         y = (x + n // x) // 2
-#     return x
+def solve_pell(d):
+    m, d_, a = 0, 1, int(math.isqrt(d))
+    if a * a == d:
+        return None  # perfect square, skip
 
+    num1, num = 1, a
+    den1, den = 0, 1
+    a0 = a
 
-# @njit
-# def diophantine(d):
-#     x = 2
-#     while True:
-#         numerator = x**2 - 1
-#         if numerator % d == 0:
-#             y_cut = numerator//d
-#             y = isqrt(y_cut)
-#             if y * y == y_cut:
-#                 return x
-        
-#         x += 1
+    while num * num - d * den * den != 1:
+        m = d_ * a - m
+        d_ = (d - m * m) // d_
+        a = (a0 + m) // d_
+        num1, num = num, a * num + num1
+        den1, den = den, a * den + den1
 
-
-# search_space = 100
-# non_squares = [True for _ in range(search_space)]
-# i = 1
-# while True:
-#     if i**2 < search_space:
-#         non_squares[i**2] = False
-#     else:
-#         break
-#     i += 1
-
-# #find minimal solution given a value of D
-# largest_pair = (0, 0)
-# for count, bool_val in tqdm(list(enumerate(non_squares))):
-#     if bool_val and count > 2:
-#         x = diophantine(count)
-#         if x > largest_pair[0]:
-#             largest_pair = (x, count)
-#             # print(largest_pair)
-# print(largest_pair)
-        
-from numba import njit
-from tqdm import tqdm
-
-
-@njit
-def isqrt(n):
-    if n == 0 or n == 1:
-        return n
-    x = n
-    y = (x + 1) // 2
-    while y < x:
-        x = y
-        y = (x + n // x) // 2
-    return x
-
-
-@njit
-def diophantine(d):
-    x = 2
-    while True:
-        numerator = x * x - 1
-        if numerator % d == 0:
-            y_cut = numerator // d
-            y = isqrt(y_cut)
-            if y * y == y_cut:
-                return x
-        x += 1
-
+    return num  # minimal x
 
 def main():
-    search_space = 100
-    # Mark non-squares up to search_space
-    non_squares = [True] * search_space
-    for i in range(1, isqrt(search_space) + 1):
-        if i * i < search_space:
-            non_squares[i * i] = False
+    max_x = 0
+    result_d = 0
 
-    largest_pair = (0, 0)
-    for d, is_non_square in tqdm(list(enumerate(non_squares))):
-        if is_non_square and d > 2:
-            x = diophantine(d)
-            if x > largest_pair[0]:
-                largest_pair = (x, d)
+    for D in range(2, 1001):
+        x = solve_pell(D)
+        if x and x > max_x:
+            max_x = x
+            result_d = D
 
-    print(largest_pair)
-
+    print(result_d)
 
 if __name__ == "__main__":
     main()
