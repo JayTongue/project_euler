@@ -2,6 +2,10 @@ from numba import jit
 
 @jit
 def bool_sieve(num):
+    """
+    returns a bool_array of all numbers up to param num
+    stating whether they are prime
+    """
     if num < 2:
         return [False] * (num + 1)
     
